@@ -1,0 +1,201 @@
+package library;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class LoginConnection {
+	
+	public void login(User ref) throws Exception
+	{
+		Connection connection=getConnection();
+		String query="SELECT * FROM LIBRARY WHERE EMAIL=?";
+		PreparedStatement preparedStatement=connection.prepareStatement(query);
+		 preparedStatement.setString(1, ref.getEmail());
+		 ResultSet resultset=preparedStatement.executeQuery();
+		 if(resultset.next())
+		 {
+			 if(ref.getPassword().equals(resultset.getString("password")))
+			 {
+				 System.out.println("Login Successfully");
+			 }
+			 else if(! ref.getEmail().equals(resultset.getString("email"))&& ref.getPassword().equals(resultset.getString("password")))
+			 {
+				System.out.println("Email not correct"); 
+			 }
+			 else if(! ref.getPassword().equals(resultset.getString("password"))&& ref.getEmail().equals(resultset.getString(ref.getEmail())))
+			 {
+				 System.out.println("Password not correct");
+			 }
+			 else
+			 {
+				 System.out.println("Login failed");
+			 }
+			 
+		 }
+		 else
+		 {
+			 System.out.println("User not register");
+		 }
+		
+	}
+	public void bookAdd(Book book) throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("INSERT INTO BOOK(id,name,author,price,genre)values(?,?,?,?,?)");
+		preparedStatement.setInt(1,book.getId());
+		preparedStatement.setString(2,book.getName());
+		preparedStatement.setString(3,book.getAuthor());
+		preparedStatement.setDouble(4,book.getPrice());
+		preparedStatement.setString(5,book.getGenre());
+		int result=preparedStatement.executeUpdate();
+		if(result!=0)
+		{
+			System.out.println("Added Successfully");
+		}
+		else
+		{
+			System.out.println("Please try again");
+		}
+	}
+	public void bookDelete(Book book)throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("delete from book where id=?");
+		preparedStatement.setInt(1, book.getId());
+		int result=preparedStatement.executeUpdate();
+		if(result!=0)
+		{
+			System.out.println("*****Deleted Successfully");
+		}
+		else
+		{
+			System.out.println("Please try again");
+		}
+	}
+	public ResultSet bookFetchById(Book book)throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("select * from book where id=?");
+		preparedStatement.setInt(1,book.getId());
+	     ResultSet result=preparedStatement.executeQuery();
+	     if(result.next())
+	     {
+	    	 System.out.println("Fetch By Id Successfully");
+	    	 System.out.println("ID :"+result.getInt("id"));
+	    	 System.out.println("Name:"+result.getString("name"));
+	    	 System.out.println("Author:"+result.getString("Author"));
+	    	 System.out.println("Price:"+result.getString("price"));
+	    	 System.out.println("Genre:"+result.getString("genre"));
+	     }
+	     else
+	     {
+	    	 System.out.println("Try Again");
+	     }
+	     return result;
+	}
+	//Book fetch by name
+	
+	public ResultSet bookFetchByName(Book book)throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("select * from book where id=?");
+		preparedStatement.setString(1,book.getName());
+	     ResultSet result=preparedStatement.executeQuery();
+	     if(result.next())
+	     {
+	    	 System.out.println("Fetch By Name Successfully");
+	    	 System.out.println("ID :"+result.getInt("id"));
+	    	 System.out.println("Name:"+result.getString("name"));
+	    	 System.out.println("Author:"+result.getString("Author"));
+	    	 System.out.println("Price:"+result.getString("price"));
+	    	 System.out.println("Genre:"+result.getString("genre"));
+	     }
+	     else
+	     {
+	    	 System.out.println("Try Again");
+	     }
+	     return result;
+	}
+	
+	//book fetch by author
+	
+	public ResultSet bookFetchByAuthor(Book book) throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("select * from book where author=?");
+		preparedStatement.setString(1,book.getAuthor());
+	     ResultSet result=preparedStatement.executeQuery();
+	     if(result.next())
+	     {
+	    	 System.out.println("Fetch By author Successfully");
+	    	 System.out.println("ID :"+result.getInt("id"));
+	    	 System.out.println("Name:"+result.getString("name"));
+	    	 System.out.println("Author:"+result.getString("Author"));
+	    	 System.out.println("Price:"+result.getString("price"));
+	    	 System.out.println("Genre:"+result.getString("genre"));
+	     }
+	     else
+	     {
+	    	 System.out.println("Try Again");
+	     }
+	     return result;
+	}
+	
+	//book fetch by genre
+	
+	public ResultSet bookFetchByGenre(Book book) throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("select * from book where genre=?");
+		preparedStatement.setString(1,book.getGenre());
+	     ResultSet result=preparedStatement.executeQuery();
+	     if(result.next())
+	     {
+	    	 System.out.println("Fetch By Genre Successfully");
+	    	 System.out.println("ID :"+result.getInt("id"));
+	    	 System.out.println("Name:"+result.getString("name"));
+	    	 System.out.println("Author:"+result.getString("Author"));
+	    	 System.out.println("Price:"+result.getString("price"));
+	    	 System.out.println("Genre:"+result.getString("genre"));
+	     }
+	     else
+	     {
+	    	 System.out.println("Try Again");
+	     }
+	     return result;
+	}
+	
+	//Update book
+	public void updateBook(Book book)throws Exception
+	{
+		Connection connection=getConnection();
+		PreparedStatement preparedStatement=connection.prepareStatement("update book set name=? where id=?");
+		preparedStatement.setString(1,book.getName());
+		preparedStatement.setInt(1,book.getId());
+		int result=preparedStatement.executeUpdate();
+		if(result!=0)
+		{
+			System.out.println("Updated");
+		}
+		else
+		{
+			System.out.println("Not updated");
+		}
+	}
+	public void exit() throws Exception
+	{
+		Connection connection=getConnection();
+		connection.close();
+		System.out.println("exitted");
+		
+	}
+	public Connection getConnection() throws Exception
+	{
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/person","root","root");
+		return connection;
+	}
+
+}
